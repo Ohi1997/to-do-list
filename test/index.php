@@ -36,6 +36,7 @@ if (isset($_GET['delete'])) {
 // Retrieve tasks from the database
 $sql = "SELECT * FROM tasks ORDER BY created_at DESC";
 $result = $conn->query($sql);
+print_r("Result:" .$result);
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +56,7 @@ $result = $conn->query($sql);
         </form>
 
         <ul class="list-group">
-            <?php while($row = $result->fetch_assoc()) { ?>
+            <?php if($row = $result->fetch_assoc()) { ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <?php echo $row['task']; ?>
                     <div>
@@ -66,7 +67,9 @@ $result = $conn->query($sql);
                         <a href="javascript:void(0);" onclick="confirmDelete(<?php echo $row['id']; ?>)" class="btn btn-sm btn-danger">Delete</a>
                     </div>
                 </li>
-            <?php } ?>
+            <?php } else{
+                echo "Maa chudao!";
+            } ?>
         </ul>
     </div>
 </body>
