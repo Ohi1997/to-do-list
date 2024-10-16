@@ -19,13 +19,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
-    
-}
 
+    //check if password match
+    if ($password !== $confirm_password) {
+        echo "<center><p class='register-alert-text'>Passwords do not match!</p></center>";
+    } else {
+        //hash the password
+        $hash_password = password_hash($password, PASSWORD_DEFAULT);
+
+        //check if username, email already exists
+        $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+        $stmt->bind_param("ss", $username, $email);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->num_rows > 0) {
+            echo "<center><p class='register-alert-text'>Username or Email already exists!</p></center>";
+        } else {
+            // insert into database
+            $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $username, $email, $hash_password);
+
+            // show message upon succession
+            if ($stmt->execute()) {
+                echo "<center><p class='register-success-text'>Registration successful! You can now <a href='login.php'>login</a>.</p></center>";
+            } else {
+                echo "<center><p class='register-alert-text'>Something went wrong. Please try again.</p></center>";
+            }
+        }
+    }
+    //close connection
+    $conn->close();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

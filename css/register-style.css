@@ -1,3 +1,9 @@
 #user-form{
     width: 700px;
 }
+.register-alert-text{
+    color: red;
+}
+.register-success-text{
+    color: green;
+}
