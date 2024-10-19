@@ -1,6 +1,10 @@
 #user-form{
     width: 700px;
 }
+.register-alert-text, .register-success-text{
+    font-size: 1.5rem;
+    font-weight: 600;
+}
 .register-alert-text{
     color: red;
 }
