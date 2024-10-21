@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // get form data
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $remember_me = isset($_POST['remember_me']);
 
     // Check if the email exists in the database
     $stmt = $conn->prepare("SELECT id, username, password FROM users WHERE email = ?");
@@ -36,6 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Password is correct, start the session
             $_SESSION['id'] = $user_id;
             $_SESSION['username'] = $username;
+
+
+            // If "Remember Me" is checked, set cookies for 30 days
+            if ($remember_me) {
+                setcookie("user_id", $user_id, time() + (86400 * 30), "/");  // Cookie valid for 30 days
+                setcookie("username", $username, time() + (86400 * 30), "/");
+            }
 
             // Redirect to the to-do list page (create this later)
             header("Location: todo.php");
@@ -76,8 +84,13 @@ $conn->close();
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+                <label for="remember_me" class="form-check-label">Remember Me</label>
+            </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
+
     </div>
 </body>
 
