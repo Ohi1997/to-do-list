@@ -15,6 +15,22 @@ if ($conn->connect_error) {
     die("Connection Failed: " . $conn->connect_error);
 }
 
+// Function to check internet connection
+function isInternetConnected() {
+    $connected = @fsockopen("www.google.com", 80); 
+    if ($connected) {
+        fclose($connected);
+        return true;
+    }
+    return false;
+}
+
+// Check internet connection before proceeding
+if (!isInternetConnected()) {
+    echo "<p style='color:red;'>An internet connection is required to log in.</p>";
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // get form data
     $email = $_POST['email'];
@@ -41,8 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // If "Remember Me" is checked, set cookies for 30 days
             if ($remember_me) {
-                setcookie("user_id", $user_id, time() + (86400 * 30), "/");  // Cookie valid for 30 days
-                setcookie("username", $username, time() + (86400 * 30), "/");
+                // setcookie("user_id", $user_id, time() + (86400 * 30), "/");
+                // setcookie("username", $username, time() + (86400 * 30), "/");
+                // For testing, set the cookie to expire in 1 minute
+setcookie("user_id", $user_id, time() + 30, "/");
+setcookie("username", $username, time() + 30, "/");
+
             }
 
             // Redirect to the to-do list page (create this later)
@@ -92,10 +112,13 @@ $conn->close();
         </form>
 
     </div>
+    <!-- JQuery CDN  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Script to check internet connction  -->
+     <script src="./js/custom.js"></script>
 </body>
 
 </html>
-
 <?php
 
 ?>
